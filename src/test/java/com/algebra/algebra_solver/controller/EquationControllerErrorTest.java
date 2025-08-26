@@ -24,7 +24,6 @@ public class EquationControllerErrorTest {
 
     @Test
     void notFound_returns404() throws Exception {
-        // ID 9999 doesn’t exist
         mockMvc.perform(post("/api/equations/9999/evaluate")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"variables\":{\"x\":2}}"))
@@ -36,7 +35,6 @@ public class EquationControllerErrorTest {
 
     @Test
     void invalidEquation_returns400() throws Exception {
-        // Try to store an invalid equation
         mockMvc.perform(post("/api/equations/store")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"equation\":\"3x ++ 2\"}"))
@@ -48,7 +46,6 @@ public class EquationControllerErrorTest {
 
     @Test
     void unsolvableEquation_returns422() throws Exception {
-        // Equation with no real solution: x^2 + 1 = 0
         String storeJson = mapper.writeValueAsString(Map.of("equation", "x^2 + 1"));
         String id = mockMvc.perform(post("/api/equations/store")
                 .contentType(MediaType.APPLICATION_JSON)

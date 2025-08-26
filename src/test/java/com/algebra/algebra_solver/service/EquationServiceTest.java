@@ -37,7 +37,6 @@ public class EquationServiceTest {
     }
 
     // --- EXTRA EDGE CASE TESTS ---
-
     @Test
     void store_and_retrieve() {
         var eq = svc.store("3*x + 2");
@@ -64,5 +63,36 @@ public class EquationServiceTest {
         Map<String, Double> vars = new HashMap<>();
         vars.put("x", 0.0);
         assertThrows(ArithmeticException.class, () -> svc.evaluate(eq.getId(), vars));
+    }
+
+    // ---------- ADDED FOR EXTRA RIGOR ----------
+
+    @Test
+    void evaluate_with_parentheses_and_nesting() {
+        // (2 + x) * (3 + y)
+        String id = svc.store("(2 + x) * (3 + y)").getId();
+        double v = svc.evaluate(id, Map.of("x", 1.0, "y", 2.0));
+        assertEquals(15.0, v, 1e-9);
+    }
+
+    @Test
+    void solve_with_multiple_unknowns_should_fail() {
+        String id = svc.store("2*x + 3*y").getId();
+        assertThrows(InvalidEquationException.class, () -> svc.solve(id, "x", Map.of()));
+    }
+
+    @Test
+    void store_and_evaluate_very_long_expression() {
+        String expr = "x^3 + 2*x^2 - x + (y - 1)*(z + 4) - 7/5 + (x^2)";
+        String id = svc.store(expr).getId();
+        assertNotNull(id);
+        // This just checks that evaluation doesn't throw for a complex input.
+        assertDoesNotThrow(() -> svc.evaluate(id, Map.of("x", 1.0, "y", 2.0, "z", 3.0)));
+    }
+
+    @Test
+    void evaluate_with_no_variables_provided_should_fail() {
+        String id = svc.store("x + y").getId();
+        assertThrows(IllegalArgumentException.class, () -> svc.evaluate(id, new HashMap<>()));
     }
 }
