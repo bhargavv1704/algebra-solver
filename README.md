@@ -151,6 +151,6 @@ curl http://localhost:8080/api/equations
 
 ## Contact
 
-For Queries : [manishbhargav1014@gmail.com](mailto:manishbhargav1014@gmail.com)
+For questions or clarifications, contact: manishbhargav1014@gmail.com
 
 ---
